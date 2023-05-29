@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id   String @id @default(uuid())
+  name String @db.VarChar(128)
+  email String  @unique
+  password String @db.Text()
+  gender String @db.VarChar(18)
+
+  createdAt DateTime @db.Timestamp() @default(now())
+  updatedAt DateTime @updatedAt
+
+  datings Dating[] @relation("Seeker")
+  visitedUsers Dating[] @relation("VisitedUser")
+  unlockedFeatures UnlockedFeature[]
+}
+
+model Dating{
+  seekerId String
+  visitedUserId String
+  createdAt DateTime @db.Date() @default(now())
+  status String? @db.VarChar(10)
+
+  seeker User @relation("Seeker",fields: [seekerId], references: [id])
+  visitedUser User @relation("VisitedUser", fields: [visitedUserId], references: [id])
+
+  @@id([seekerId, visitedUserId, createdAt])
+}
+
+model Package{
+  id   String @id @default(uuid())
+  type String @db.VarChar(64)
+  price Int @db.Integer
+  createdAt DateTime @db.Timestamp() @default(now())
+
+  features Feature[]
+}
+
+model Feature{
+  id   String @id @default(uuid())
+  name String @db.VarChar(128)
+  createdAt DateTime @db.Timestamp() @default(now())
+  packageId String
+
+  package Package @relation(fields: [packageId], references: [id])
+
+  unlockedFeature UnlockedFeature[]
+}
+
+model UnlockedFeature{
+  userId String
+  featureId String
+
+  user User @relation(fields: [userId], references: [id])
+  feature Feature @relation(fields: [featureId], references: [id])
+
+  @@id([userId, featureId])
+}
