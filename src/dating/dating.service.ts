@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { CommonService } from "src/common/common.service";
 import { PrismaService } from "src/prisma/prisma.service";
-import { IDatingSearchResponse } from "./interfaces/dating-search-response.interface";
 import { DatingStatusEnum } from "src/enums/dating-status.enum";
 import { IDatingViewResponse } from "./interfaces/dating-view-response.interface";
 import { IBaseResponse } from "src/interfaces/base-response.interface";
 import { User } from "@prisma/client";
+import { NO_SWIPE_QUOTA_FEATURE_ID } from "src/consts/feature.const";
 
 @Injectable()
 export class DatingService{
@@ -16,14 +16,23 @@ export class DatingService{
 
     async view(seekerId: string, gender: string): Promise<IDatingViewResponse>{
         try{
-            const [{count}] = await this.prismaService.$queryRawUnsafe<[{count: number}]>(`
-                select count(1) from "Dating" u
-                where u."seekerId" = '${seekerId}'
-                and u."createdAt" = '${new Date().toDateString()}'
-            `)
-            if(count >= 10){
-                throw new BadRequestException("Your are reached limit of dating profile visits")
+            const noSwipeQuotaFeature = await this.prismaService.unlockedFeature.findFirst({
+                where: {
+                    featureId: NO_SWIPE_QUOTA_FEATURE_ID,
+                    userId: seekerId
+                }
+            })
+            if(!noSwipeQuotaFeature){
+                const [{count}] = await this.prismaService.$queryRawUnsafe<[{count: number}]>(`
+                    select count(1) from "Dating" u
+                    where u."seekerId" = '${seekerId}'
+                    and u."createdAt" = '${new Date().toDateString()}'
+                `)
+                if(count >= 10){
+                    throw new BadRequestException("Your are reached limit of dating profile visits")
+                }
             }
+            
             const [visitedUser] = await this.prismaService.$queryRawUnsafe<User[]>(`
                 select "id", "name", "gender" from "User" u
                 where u.id not in (
@@ -43,7 +52,6 @@ export class DatingService{
                     }
                 })
             }
-            
 
             return {
                 statusCode: 200,

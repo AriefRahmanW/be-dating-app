@@ -1,0 +1,3 @@
+export const NO_SWIPE_QUOTA_FEATURE_ID = "6045d863-dbac-4bff-816e-64ab1014b64b"
+
+export const VERIFIED_LABEL_FEATURE_ID = "768541da-391e-41de-a6fb-4f0e00702c25"

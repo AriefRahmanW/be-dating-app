@@ -30,6 +30,7 @@ model Dating{
   visitedUserId String
   createdAt DateTime @db.Date() @default(now())
   status String? @db.VarChar(10)
+  updatedAt DateTime @updatedAt
 
   seeker User @relation("Seeker",fields: [seekerId], references: [id])
   visitedUser User @relation("VisitedUser", fields: [visitedUserId], references: [id])
@@ -60,7 +61,8 @@ model Feature{
 model UnlockedFeature{
   userId String
   featureId String
-
+  createdAt DateTime @db.Timestamp() @default(now())
+  
   user User @relation(fields: [userId], references: [id])
   feature Feature @relation(fields: [featureId], references: [id])
 

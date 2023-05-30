@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import * as bcrypt from 'bcrypt'
+import { NO_SWIPE_QUOTA_FEATURE_ID, VERIFIED_LABEL_FEATURE_ID } from "../src/consts/feature.const";
 
 const prisma = new PrismaClient();
 
@@ -89,6 +90,37 @@ async function main(){
     })
 
     console.log("User Created")
+
+    const premiumPackage = await prisma.package.upsert({
+        where: {
+            id: "8ec9509b-477f-4aad-98e5-215d3f232ef0"
+        },
+        create: {
+            type: "PREMIUM",
+            price: 50000
+        },
+        update: {}
+    })
+
+    console.log("Package Created")
+
+    await prisma.feature.createMany({
+        data: [
+            {
+                id: NO_SWIPE_QUOTA_FEATURE_ID,
+                name: "No swipe quota",
+                packageId: premiumPackage.id
+            },
+            {
+                id: VERIFIED_LABEL_FEATURE_ID,
+                name: "Verified label",
+                packageId: premiumPackage.id
+            }
+        ],
+        skipDuplicates: true
+    })
+
+    console.log("Feature Created")
 }
 
 main()

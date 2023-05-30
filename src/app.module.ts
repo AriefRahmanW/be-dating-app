@@ -5,11 +5,15 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatingModule } from './dating/dating.module';
 import { JwtModule } from '@nestjs/jwt';
+import { FeatureModule } from './feature/feature.module';
+import { PurchaesModule } from './purchaes/purchaes.module';
 
 @Module({
   imports: [
     AuthModule,
-    DatingModule, 
+    DatingModule,
+    FeatureModule,
+    PurchaesModule, 
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -18,11 +22,11 @@ import { JwtModule } from '@nestjs/jwt';
       useFactory: (configService: ConfigService) => ({
           secret: configService.getOrThrow<string>("JWT_SECRET"),
           signOptions: {
-              expiresIn: '10h',
+              expiresIn: configService.getOrThrow<string>("JWT_EXPIRES_IN"),
           }
       }),
       inject: [ConfigService]
-  }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

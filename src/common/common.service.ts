@@ -1,6 +1,7 @@
 import { BadRequestException, HttpException, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { Request } from 'express'
+import * as bcrypt from 'bcrypt'
 
 export class CommonService{
 
@@ -24,5 +25,11 @@ export class CommonService{
             throw e
         }
         throw new InternalServerErrorException("Something wrong")
+    }
+
+    async hashPassword(password: string): Promise<string>{
+        const saltOrRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+        return hashedPassword
     }
 }

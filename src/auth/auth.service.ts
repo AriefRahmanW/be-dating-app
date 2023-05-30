@@ -1,14 +1,16 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { LoginDto } from "./dtos/login.dto";
 import { SignUpDto } from "./dtos/sign-up.dto";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "../../src/prisma/prisma.service";
 import * as bcrypt from 'bcrypt';
-import { IBaseResponse } from "src/interfaces/base-response.interface";
+import { IBaseResponse } from "../../src/interfaces/base-response.interface";
 import { JwtService } from "@nestjs/jwt";
-import { IJwtPayload } from "src/interfaces/jwt-payload.interface";
+import { IJwtPayload } from "../../src/interfaces/jwt-payload.interface";
 import { ILoginResponse } from "./interfaces/login-response.interface";
-import { CommonService } from "src/common/common.service";
-import { GenderEnum } from "src/enums/gender.enum";
+import { CommonService } from "../../src/common/common.service";
+import { GenderEnum } from "../../src/enums/gender.enum";
+import { IProfileResponse } from "./interfaces/profile-response.interface";
+import { VERIFIED_LABEL_FEATURE_ID } from "../../src/consts/feature.const";
 
 @Injectable()
 export class AuthService{
@@ -31,11 +33,10 @@ export class AuthService{
                 }
             })
             if(user){
-                throw new BadRequestException("Invalid Email or Password")
+                throw new BadRequestException("Email already signed up")
             }
 
-            const saltOrRounds = 10;
-            const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+            const hashedPassword = await this.commonService.hashPassword(password)
 
             await this.prismaService.user.create({
                 data: {
@@ -47,7 +48,7 @@ export class AuthService{
             })
 
             return {
-                statusCode: 200,
+                statusCode: 201,
                 message: "Register successfully"
             }
             
@@ -59,11 +60,15 @@ export class AuthService{
         const {email, password} = data
 
         try{
-            const user = await this.prismaService.user.findUniqueOrThrow({
+            const user = await this.prismaService.user.findUnique({
                 where: {
                     email: email
                 }
             })
+
+            if(!user){
+                throw new BadRequestException("Incorrect email or password.");
+            }
 
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
@@ -86,6 +91,37 @@ export class AuthService{
             }
         }catch(e){
             this.commonService.catchError(e)
+        }
+    }
+
+    async profile(userId: string): Promise<IProfileResponse>{
+        try{
+            const user = await this.prismaService.user.findFirstOrThrow({
+                where: {
+                    id: userId
+                },
+                select: {
+                    id: true,
+                    name: true
+                }
+            })
+            const verifiedLabelFeature = await this.prismaService.unlockedFeature.findFirst({
+                where: {
+                    featureId: VERIFIED_LABEL_FEATURE_ID,
+                    userId: userId
+                }
+            })
+
+            return {
+                statusCode: 200,
+                message: "Success get profile",
+                payload: {
+                    ...user,
+                    isVerified: verifiedLabelFeature ? true : false
+                }
+            }
+        }catch(e){
+
         }
     }
 }
