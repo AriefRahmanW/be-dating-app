@@ -24,7 +24,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Backend Dating App using NestJS Framework
 
 ## Structure
 - prisma (contains schema, migrations, and seeder)
