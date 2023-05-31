@@ -6,14 +6,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatingModule } from './dating/dating.module';
 import { JwtModule } from '@nestjs/jwt';
 import { FeatureModule } from './feature/feature.module';
-import { PurchaesModule } from './purchaes/purchaes.module';
+import { PurchaseModule } from './purchase/purchase.module';
 
 @Module({
   imports: [
     AuthModule,
     DatingModule,
     FeatureModule,
-    PurchaesModule, 
+    PurchaseModule, 
     ConfigModule.forRoot({
       isGlobal: true,
     }),

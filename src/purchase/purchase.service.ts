@@ -4,7 +4,7 @@ import { IBaseResponse } from "src/interfaces/base-response.interface";
 import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
-export class PurchaesService{
+export class PurchaseService{
     constructor(
         private prismaService: PrismaService,
         private commonService: CommonService

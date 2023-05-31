@@ -36,6 +36,7 @@
   - interfaces (contains interface)
   - guards (contains guards to authorize user)
 - test (contains e2e testing)
+- .env.example (example of used environments during runtime)
 
 ## Installation
 

@@ -1,11 +1,11 @@
 import { Controller, ParseIntPipe, Post, Query, Req, UseGuards } from "@nestjs/common";
-import { PurchaesService } from "./purchaes.service";
+import { PurchaseService } from "./purchase.service";
 import { AuthGuard } from "src/guards/auth.guard";
 
-@Controller("purchaeses")
+@Controller("purchases")
 export class PurchaesController{
     constructor(
-        private purchaesService: PurchaesService
+        private purchaseService: PurchaseService
     ){}
     
     @UseGuards(AuthGuard)
@@ -16,6 +16,6 @@ export class PurchaesController{
         @Query("balance", ParseIntPipe) balance: number 
     ){
         const {id} = req.user
-        return this.purchaesService.addPurchaes(id, featureId, balance)
+        return this.purchaseService.addPurchaes(id, featureId, balance)
     }
 }
