@@ -29,11 +29,12 @@
 ## Structure
 - prisma (contains schema, migrations, and seeder)
 - src (main)
+  - auth (contains login, sign-up, etc)
   - prisma (prisma module)
-  - common (contains mostly used function)
+  - common (contains mostly used functions)
   - consts (contains constant variables)
-  - enums (contains enumerate)
-  - interfaces (contains interface)
+  - enums (contains enumerates)
+  - interfaces (contains interfaces)
   - guards (contains guards to authorize user)
 - test (contains e2e testing)
 - .env.example (example of used environments during runtime)
@@ -65,8 +66,5 @@ $ pnpm run test
 
 # e2e tests
 $ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
 ```
 

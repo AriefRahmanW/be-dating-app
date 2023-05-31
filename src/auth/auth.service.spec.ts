@@ -8,7 +8,7 @@ import { CommonService } from '../../src/common/common.service';
 import { GenderEnum } from '../../src/enums/gender.enum';
 import { randomBytes } from 'crypto';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { VERIFIED_LABEL_FEATURE_ID } from '../../src/consts/feature.const';
+import { NO_SWIPE_QUOTA_FEATURE_ID, VERIFIED_LABEL_FEATURE_ID } from '../../src/consts/feature.const';
 
 describe('AppService', () => {
     let authService: AuthService
@@ -39,7 +39,7 @@ describe('AppService', () => {
         authService = app.get<AuthService>(AuthService);
         commonService = app.get<CommonService>(CommonService)
         prismaService = app.get<PrismaService>(PrismaService)
-
+        
         await prismaService.user.createMany({
             data: [
                 {
@@ -54,6 +54,33 @@ describe('AppService', () => {
                     name: "Mawar",
                     gender: "FEMALE"
                 },
+            ],
+            skipDuplicates: true
+        })
+
+        const premiumPackage = await prismaService.package.upsert({
+            where: {
+                id: "8ec9509b-477f-4aad-98e5-215d3f232ef0"
+            },
+            create: {
+                type: "PREMIUM",
+                price: 50000
+            },
+            update: {}
+        })
+    
+        await prismaService.feature.createMany({
+            data: [
+                {
+                    id: NO_SWIPE_QUOTA_FEATURE_ID,
+                    name: "No swipe quota",
+                    packageId: premiumPackage.id
+                },
+                {
+                    id: VERIFIED_LABEL_FEATURE_ID,
+                    name: "Verified label",
+                    packageId: premiumPackage.id
+                }
             ],
             skipDuplicates: true
         })
@@ -141,6 +168,8 @@ describe('AppService', () => {
 
     afterAll(async () => {
         await prismaService.unlockedFeature.deleteMany()
+        await prismaService.feature.deleteMany()
+        await prismaService.package.deleteMany()
         await prismaService.user.deleteMany()
         await prismaService.$disconnect()
     })

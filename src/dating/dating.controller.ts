@@ -1,5 +1,5 @@
 import { Controller, Get, Put, Query, Req, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "src/guards/auth.guard";
+import { AuthGuard } from "../../src/guards/auth.guard";
 import { DatingService } from "./dating.service";
 
 @Controller("datings")
@@ -8,15 +8,6 @@ export class DatingController{
     constructor(
         private datingService: DatingService
     ){}
-
-    // @UseGuards(AuthGuard)
-    // @Get()
-    // search(
-    //     @Req() req
-    // ){
-    //     const {id, gender} = req.user
-    //     return this.datingService.search(id, gender)
-    // }
 
     @UseGuards(AuthGuard)
     @Get()

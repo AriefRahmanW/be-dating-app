@@ -121,7 +121,7 @@ export class AuthService{
                 }
             }
         }catch(e){
-
+            this.commonService.catchError(e)
         }
     }
 }

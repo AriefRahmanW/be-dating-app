@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { CommonService } from "src/common/common.service";
-import { PrismaService } from "src/prisma/prisma.service";
-import { DatingStatusEnum } from "src/enums/dating-status.enum";
+import { CommonService } from "../../src/common/common.service";
+import { PrismaService } from "../../src/prisma/prisma.service";
+import { DatingStatusEnum } from "../../src/enums/dating-status.enum";
 import { IDatingViewResponse } from "./interfaces/dating-view-response.interface";
-import { IBaseResponse } from "src/interfaces/base-response.interface";
+import { IBaseResponse } from "../../src/interfaces/base-response.interface";
 import { User } from "@prisma/client";
-import { NO_SWIPE_QUOTA_FEATURE_ID } from "src/consts/feature.const";
+import { NO_SWIPE_QUOTA_FEATURE_ID } from "../../src/consts/feature.const";
 
 @Injectable()
 export class DatingService{

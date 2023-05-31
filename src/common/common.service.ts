@@ -24,7 +24,7 @@ export class CommonService{
         }else if(e instanceof HttpException){
             throw e
         }
-        throw new InternalServerErrorException("Something wrong")
+        throw new InternalServerErrorException("Something went wrong")
     }
 
     async hashPassword(password: string): Promise<string>{

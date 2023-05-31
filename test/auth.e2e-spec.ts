@@ -53,7 +53,7 @@ describe("Auth Module E2E Testing", () => {
                     email: "mawar@gmail.com",
                     password: await commonService.hashPassword("!Password123"),
                     name: "Mawar",
-                    gender: "MALE"
+                    gender: "FEMALE"
                 }
             ],
             skipDuplicates: true
@@ -87,6 +87,31 @@ describe("Auth Module E2E Testing", () => {
                 }
             }).then(result => {
                 expect(result.statusCode).toEqual(201);
+            })
+    })
+
+    it("GET /auth/profile", async () => {
+        const result = await app.inject({
+                method: "POST",
+                url: "/auth/login",
+                payload: {
+                    email: "mawar@gmail.com",
+                    password: "!Password123"
+                }
+        })
+        const {payload: {accessToken}} = JSON.parse(result.payload)
+        
+        return app
+            .inject({
+                method: "GET",
+                url: "/auth/profile",
+                headers: {
+                    authorization: "Bearer " + accessToken
+                }
+            }).then(result => {
+                const {payload: {isVerified}} = JSON.parse(result.payload)
+                expect(result.statusCode).toEqual(200);
+                expect(isVerified).toBe(false)
             })
     })
 

@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
-import { PrismaModule } from "src/prisma/prisma.module";
+import { PrismaModule } from "../../src/prisma/prisma.module";
 import { DatingController } from "./dating.controller";
 import { DatingService } from "./dating.service";
-import { CommonModule } from "src/common/common.module";
+import { CommonModule } from "../../src/common/common.module";
 import { JwtModule } from "@nestjs/jwt";
 
 @Module({
