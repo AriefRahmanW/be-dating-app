@@ -26,6 +26,17 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Structure
+- prisma (contains schema, migrations, and seeder)
+- src (main)
+  - prisma (prisma module)
+  - common (contains mostly used function)
+  - consts (contains constant variables)
+  - enums (contains enumerate)
+  - interfaces (contains interface)
+  - guards (contains guards to authorize user)
+- test (contains e2e testing)
+
 ## Installation
 
 ```bash
