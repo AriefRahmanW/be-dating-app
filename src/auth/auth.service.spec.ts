@@ -41,22 +41,22 @@ describe('AppService', () => {
         prismaService = app.get<PrismaService>(PrismaService)
 
         await prismaService.user.createMany({
-                data: [
-                    {
-                        email: "jhondoe@gmail.com",
-                        password: await commonService.hashPassword("!Password123"),
-                        name: "Jhon Doe",
-                        gender: "MALE"
-                    },
-                    {
-                        email: "mawar@gmail.com",
-                        password: await commonService.hashPassword("!Password123"),
-                        name: "Mawar",
-                        gender: "FEMALE"
-                    },
-                ],
-                skipDuplicates: true
-            })
+            data: [
+                {
+                    email: "jhondoe@gmail.com",
+                    password: await commonService.hashPassword("!Password123"),
+                    name: "Jhon Doe",
+                    gender: "MALE"
+                },
+                {
+                    email: "mawar@gmail.com",
+                    password: await commonService.hashPassword("!Password123"),
+                    name: "Mawar",
+                    gender: "FEMALE"
+                },
+            ],
+            skipDuplicates: true
+        })
     });
 
 
